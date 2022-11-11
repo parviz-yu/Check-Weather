@@ -30,6 +30,8 @@ def init_app(api_key: str) -> int:
     if file_code != SUCCESS:
         return file_code
 
+    return SUCCESS
+
 
 def _init_config_file() -> int:
     try:
