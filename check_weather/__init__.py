@@ -15,10 +15,12 @@ __version__ = '0.1.0'
     FILE_WRITE_ERROR,
     CONNECTION_ERROR,
     API_KEY_ERROR,
+    NOT_FOUND_ERROR,
     LIMIT_ERROR,
     SERVER_ERROR,
-    JSON_ERROR
-) = range(10)
+    JSON_ERROR,
+    UNKNOWN_ERROR
+) = range(12)
 
 ERRORS = {
     DIR_ERROR: "config directory error",
@@ -27,6 +29,8 @@ ERRORS = {
     FILE_WRITE_ERROR: "config file write error",
     CONNECTION_ERROR: "connection error",
     API_KEY_ERROR: "api key error",
+    NOT_FOUND_ERROR: "not found error",
     LIMIT_ERROR: "request limit error",
     SERVER_ERROR: "server error",
+    UNKNOWN_ERROR: "unknown error"
 }
