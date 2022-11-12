@@ -9,11 +9,18 @@ from check_weather import ERRORS, api_req, config, weather
 PD = 18     # Padding
 BG = "\033[45m"     # Background color
 FONT = "\033[4;35m"     # Font color
+RED = "\033[0;31m"
 RESET = "\033[0m"
 
 
 app = typer.Typer(
-    help="Awesome CLI app for weather checking",
+    help="""Awesome CLI app for weather checking.\n
+    There are cities with the same names.
+    To avoid conflicts, please add the country code after the city\n
+    Melbourne, US; Melbourne, AU
+    """, 
+    add_completion=False,
+    epilog=f'With {RED}♥{RESET} by Parviz Yuldoshev'
     )
 
 
