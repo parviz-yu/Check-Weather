@@ -28,7 +28,7 @@ def check_api_key(api_key: str) -> int:
 
     try:
         response = requests.get(BASE_WEATHER_API_URL +
-                                '/current', params=params)
+                                '/weather', params=params)
     except requests.ConnectionError:
         return CONNECTION_ERROR
 
@@ -53,10 +53,10 @@ def check_status_code(response: requests.Response) -> int:
 def get_api_key(config_file_path: Path) -> str | int:
     """Return OpenWeather API key"""
     config_parser = configparser.ConfigParser()
-    config_parser.read(config_file_path)
     try:
+        config_parser.read(config_file_path)
         return config_parser['openweather']['api_key']
-    except KeyError:
+    except Exception:
         return FILE_STRUCTURE_ERROR
 
 
