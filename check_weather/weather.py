@@ -31,7 +31,7 @@ class Forecast:
         self.handler = api_req.ApiHandler(api_key)
 
     
-    def current(self, city: list[str], imperial: bool):
+    def current(self, city: list[str], imperial: bool) -> MeteorElems:
         """Get current weather from OpenWeather API."""
         
         joined_str = ' '.join(city)
@@ -51,3 +51,43 @@ class Forecast:
                 response.forecast['wind']['speed'],
                 response.forecast['visibility']
             )
+
+
+    def daily(self, city: list[str], imperial: bool) -> list[MeteorElems]:
+        """Get daily weather forecast from OpenWeather API."""
+
+        city_str = ' '.join(city)
+        response = self.handler.make_request(
+            'forecast', city_str, imperial
+        )
+
+        daily_forecasts = []
+
+        if response.error in ERRORS:
+            return [MeteorElems(response.error)]
+        else:
+            items = response.forecast['list']
+            hourly_temp = []
+            for i in range(len(items) - 1):
+                hourly_temp.append(items[i]['main']['temp'])
+                next_hour = datetime.strptime(
+                    items[i + 1]['dt_txt'], "%Y-%m-%d %H:%M:%S"
+                    ).hour
+
+                # Checks whether the next timestamp is a new day
+                # or the end of the list 
+                if next_hour == 0 or (len(items) - 2) == i:
+                    mean_temp = sum(hourly_temp) / len(hourly_temp)
+                    daily_forecasts.append(
+                        MeteorElems(
+                        0,
+                        str(datetime.utcfromtimestamp(items[i]['dt']).date()),
+                        city_str.title(),
+                        items[i]['weather'][0]['description'],
+                        mean_temp, items[i]['main']['humidity'],
+                        items[i]['wind']['speed'], items[i]['visibility']
+                        )
+                    )
+                    hourly_temp = []
+                
+            return daily_forecasts
