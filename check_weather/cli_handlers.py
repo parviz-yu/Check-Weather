@@ -80,6 +80,27 @@ def get_forecast() -> weather.Forecast:
         raise typer.Exit(1)
 
 
+def display_forecast(
+    forecast: weather.MeteorElems,
+    verbose: bool, imperial: bool
+) -> None:
+    print(
+        f'{BG}{forecast.day:^{PD}}/{forecast.city:^{PD}}{RESET}',
+        'Average temperature - '
+        f"{FONT}({forecast.aver_temp}°{'F' if imperial else 'C'}){RESET}",
+        sep='\n'
+    )
+
+    if verbose:
+        print(
+            f'Weather description: {forecast.desctiption}',
+            f'Humidity - {forecast.humidity}%',
+            f"Wind speed - {forecast.wind_speed} {'Mph' if imperial else 'M/s'}",
+            f'Visibility - {forecast.visibility}', sep="\n"
+        )
+
+
+
 @app.command()
 def today(
     city: list[str] = typer.Argument(
@@ -108,17 +129,6 @@ def today(
         )
         raise typer.Exit(1)
     else:
-        print(
-            f'{BG}{forecast.day:^{PD}}/{forecast.city:^{PD}}{RESET}',
-            'Average temperature - '
-            f"{FONT}({forecast.aver_temp}°{'F' if imperial else 'C'}){RESET}",
-            sep='\n'
-        )
+        display_forecast(forecast, verbose, imperial)
 
-        if verbose:
-            print(
-                f'Weather description: {forecast.desctiption}',
-                f'Humidity - {forecast.humidity}%',
-                f"Wind speed - {forecast.wind_speed} {'Mph' if imperial else 'M/s'}",
-                f'Visibility - {forecast.visibility}', sep="\n"
-            )
+        
