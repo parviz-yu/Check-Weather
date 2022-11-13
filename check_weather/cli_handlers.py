@@ -87,7 +87,7 @@ def display_forecast(
     print(
         f'{BG}{forecast.day:^{PD}}/{forecast.city:^{PD}}{RESET}',
         'Average temperature - '
-        f"{FONT}({forecast.aver_temp}°{'F' if imperial else 'C'}){RESET}",
+        f"{FONT}({forecast.aver_temp:.2f}°{'F' if imperial else 'C'}){RESET}",
         sep='\n'
     )
 
@@ -131,4 +131,35 @@ def today(
     else:
         display_forecast(forecast, verbose, imperial)
 
-        
+
+@app.command()
+def daily(
+    city: list[str] = typer.Argument(
+        ..., show_default=False),
+    imperial: bool = typer.Option(
+        False,
+        '-i', '--imperial',
+        help='Display the temprature in imperial units.'
+    ),
+    verbose: bool = typer.Option(
+        False,
+        '-v', '--verbose',
+        help='Display detailed weather forecast.'
+    )
+) -> None:
+    """
+    Daily weather forecast for 5 days.
+    """
+
+    forecast_answer = get_forecast()
+    forecast = forecast_answer.daily(city, imperial)
+
+    if forecast[0].error:
+        typer.secho(
+            f'FAILED with "{ERRORS[forecast[0].error]}"', fg=typer.colors.RED
+        )
+        raise typer.Exit(1)
+    else:
+        for fr in forecast:
+            display_forecast(fr, verbose, imperial)
+            print()
